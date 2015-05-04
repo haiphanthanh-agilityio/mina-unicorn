@@ -19,7 +19,7 @@ namespace :unicorn do
     set_default :unicorn_socket                 , "#{sockets_path}/unicorn.sock"
     set_default :unicorn_pid                    , "#{pids_path}/unicorn.pid"
     set_default :unicorn_config                 , "#{config_path}/unicorn.rb"
-    set_default :unicorn_script                 , "#{services_path!}/unicorn-#{app!}"
+    set_default :unicorn_script                 , "#{services_path!}/unicorn-#{app}"
     set_default :unicorn_workers                , 4
     set_default :unicorn_bin                    , "#{bundle_prefix} unicorn" # you may prefer this over the line below
     set_default :unicorn_user                   , "#{user}"

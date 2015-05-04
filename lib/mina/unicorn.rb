@@ -1,0 +1,1 @@
+load File.expand_path("../mina/tasks.rake", __FILE__)

@@ -14,7 +14,7 @@ namespace :unicorn do
     set_default :rvm_path                       , "/usr/local/rvm/scripts/rvm"
     set_default :services_path                  , '/etc/init.d'
     set_default :config_path                    , "#{deploy_to}/#{shared_path}/config"
-    set_default :config_templates_path          , "lib/mina/templates"
+    set_default :config_templates_path          , "../templates"
 
     set_default :unicorn_socket                 , "#{sockets_path}/unicorn.sock"
     set_default :unicorn_pid                    , "#{pids_path}/unicorn.pid"

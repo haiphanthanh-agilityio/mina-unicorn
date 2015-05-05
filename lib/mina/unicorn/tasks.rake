@@ -20,7 +20,7 @@ namespace :unicorn do
   include Mina::Unicorn::Utility
 
   desc "Upload and update (link) all Unicorn config files"
-  task :update => [:upload, :link]
+  task :update => [:'daemon:remove' :upload, :link]
 
   desc "Setup Unicorn folders"
   task :setup do
@@ -37,6 +37,8 @@ namespace :unicorn do
       #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
       #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
     }
+
+    invoke :update
   end
 
   desc "Link unicorn init script"

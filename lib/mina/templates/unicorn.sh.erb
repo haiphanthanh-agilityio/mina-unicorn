@@ -17,9 +17,9 @@
 
 RVM_ENV="<%= rvm_env! %>"
 APP_NAME="<%= app %>"
-APP_PATH="<%= app_path %>"
-CONFIG_PATH=<%= unicorn_config %>
-EUSER="<%= user %>"
+APP_PATH="<%= deploy_to %>/<%= current_path %>"
+CONFIG_PATH="<%= unicorn_config %>"
+EUSER="<%= unicorn_user %>"
 RAILS_ENV=<%= rails_env %>
 
 RVM="source /usr/local/rvm/environments/$RVM_ENV"

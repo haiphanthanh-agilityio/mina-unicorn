@@ -1,9 +1,9 @@
-rails_root = "<%= "#{app_path!}" %>"
-pid_file   = "<%= unicorn_pid %>"
-socket_file= "<%= unicorn_socket %>"
-log_file   = "<%= "#{logs_path}" %>/unicorn.log"
-err_log    = "<%= "#{logs_path}" %>/unicorn.error.log"
-old_pid    = pid_file + '.oldbin'
+app_path    = "<%= "#{deploy_to}/#{current_path}" %>"
+pid_file    = "<%= unicorn_pid %>"
+socket_file = "<%= unicorn_socket %>"
+log_file    = "<%= "#{logs_path}" %>/unicorn.log"
+err_log     = "<%= "#{logs_path}" %>/unicorn.error.log"
+old_pid     = "<%= "#{pid_file}.oldbin" %>"
 
 timeout 60
 worker_processes <%= unicorn_workers %>
@@ -20,7 +20,7 @@ preload_app true
 GC.copy_on_write_friendly = true if GC.respond_to?(:copy_on_write_friendly=)
 
 before_exec do |server|
-  ENV["BUNDLE_GEMFILE"] = "#{rails_root}/Gemfile"
+  ENV["BUNDLE_GEMFILE"] = "#{app_path}/Gemfile"
 end
 
 before_fork do |server, worker|

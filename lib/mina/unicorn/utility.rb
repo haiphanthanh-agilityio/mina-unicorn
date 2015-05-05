@@ -9,7 +9,7 @@ module Mina
       end
 
       def parse_template(file)
-        erb("#{config_templates_path}/#{file}.erb").gsub('"','\\"').gsub('`','\\\\`').gsub('$','\\\\$')
+        erb("#{file}.erb").gsub('"','\\"').gsub('`','\\\\`').gsub('$','\\\\$')
       end
 
       def check_response

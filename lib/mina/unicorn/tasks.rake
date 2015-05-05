@@ -20,31 +20,31 @@ namespace :unicorn do
   include Mina::Unicorn::Utility
 
   desc "Upload and update (link) all Unicorn config files"
-  task :update => [:'daemon:remove' :upload, :link]
+  task :update => [:'daemon:remove', :upload, :link]
 
   desc "Setup Unicorn folders"
   task :setup do
     queue! %{
       echo "-----> Create Unicorn sockets folder"
-      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
-      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
+      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/sockets"]}
+      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/sockets"]}
       
       echo "-----> Create Unicorn pids folder"
-      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
-      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
+      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/pids"]}
+      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/pids"]}
 
       echo "-----> Create Unicorn logs folder"
       #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
       #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
     }
 
-    invoke :update
+    invoke :'unicorn:update'
   end
 
-  desc "Link unicorn init script"
+  desc "Link Unicorn init script"
   task :link => :environment do
     queue %{
-      echo "-----> Linking unicorn init script..."
+      echo "-----> Linking Unicorn init script..."
       #{echo_cmd %[sudo cp #{config_path}/unicorn.sh #{unicorn_script}]}
       #{echo_cmd %[sudo chown #{unicorn_user}:#{unicorn_group} #{unicorn_script}]}
       #{echo_cmd %[sudo chmod ugo+x #{unicorn_script}]}
@@ -98,7 +98,7 @@ namespace :unicorn do
   namespace :daemon do
     desc "Create or remove unicorn daemon"
 
-    desc "Remove unicorn daemon from system"
+    desc "Remove Unicorn daemon from system"
     task :remove => :'unicorn:stop' do
       queue %{
         echo "-----> Removing Unicorn daemon..."

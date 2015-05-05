@@ -35,7 +35,7 @@ case "$1" in
   start)
     echo -n "Starting $DESC: "
     su - $EUSER -c "$CMD $CMD_OPTS"
-    echo "$NAME."
+    echo "$NAME"
   ;;
 
   stop)
@@ -43,7 +43,7 @@ case "$1" in
     if [ -f $PID ] && [ -e /proc/$(cat $PID) ]
     then
       kill -QUIT `cat $PID`
-      echo "$NAME."
+      echo "$NAME"
     else
       echo "Unable to get $PID file, or process is down"
     fi
@@ -57,7 +57,7 @@ case "$1" in
     else
       su - $EUSER -c "$CMD $CMD_OPTS"
     fi
-    echo "$NAME."
+    echo "$NAME"
   ;;
 
   *)

@@ -9,7 +9,7 @@ set_default :unicorn_script_template        , File.expand_path("../../templates/
 set_default :unicorn_socket                 , -> { "#{deploy_to}/#{shared_path}/sockets/unicorn.sock" }
 set_default :unicorn_pid                    , -> { "#{deploy_to}/#{shared_path}/pids/unicorn.pid" }
 set_default :unicorn_config                 , -> { "#{deploy_to}/#{shared_path}/config/unicorn.rb" }
-set_default :unicorn_logs_path              , -> { "#{deploy_to}/#{shared_path}/logs" }
+set_default :unicorn_logs_path              , -> { "#{deploy_to}/#{shared_path}/log" }
 set_default :unicorn_script                 , -> { "#{services_path}/#{app}-unicorn" }
 set_default :unicorn_workers                , 4
 set_default :unicorn_bin                    , "#{bundle_prefix} unicorn" # you may prefer this over the line below

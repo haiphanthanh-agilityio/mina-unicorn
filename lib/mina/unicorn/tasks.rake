@@ -9,7 +9,8 @@ set_default :unicorn_script_template        , File.expand_path("../../templates/
 set_default :unicorn_socket                 , -> { "#{deploy_to}/#{shared_path}/sockets/unicorn.sock" }
 set_default :unicorn_pid                    , -> { "#{deploy_to}/#{shared_path}/pids/unicorn.pid" }
 set_default :unicorn_config                 , -> { "#{deploy_to}/#{shared_path}/config/unicorn.rb" }
-set_default :unicorn_script                 , -> { "#{deploy_to}/#{shared_path}/config/#{app}-unicorn" }
+set_default :unicorn_logs_path              , -> { "#{deploy_to}/#{shared_path}/logs" }
+set_default :unicorn_script                 , -> { "#{services_path}/#{app}-unicorn" }
 set_default :unicorn_workers                , 4
 set_default :unicorn_bin                    , "#{bundle_prefix} unicorn" # you may prefer this over the line below
 set_default :unicorn_user                   , "#{user}"
@@ -20,6 +21,23 @@ namespace :unicorn do
 
   desc "Upload and update (link) all Unicorn config files"
   task :update => [:upload, :link]
+
+  desc "Setup Unicorn folders"
+  task :setup do
+    queue! %{
+      echo "-----> Create Unicorn sockets folder"
+      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
+      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
+      
+      echo "-----> Create Unicorn pids folder"
+      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
+      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
+
+      echo "-----> Create Unicorn logs folder"
+      #{echo_cmd %[mkdir -p "#{deploy_to}/#{shared_path}/logs"]}
+      #{echo_cmd %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/logs"]}
+    }
+  end
 
   desc "Link unicorn init script"
   task :link => :environment do

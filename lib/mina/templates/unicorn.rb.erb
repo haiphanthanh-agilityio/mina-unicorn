@@ -1,8 +1,8 @@
 app_path    = "<%= "#{deploy_to}/#{current_path}" %>"
 pid_file    = "<%= unicorn_pid %>"
 socket_file = "<%= unicorn_socket %>"
-log_file    = "<%= "#{logs_path}" %>/unicorn.log"
-err_log     = "<%= "#{logs_path}" %>/unicorn.error.log"
+log_file    = "<%= "#{unicorn_logs_path}" %>/unicorn.log"
+err_log     = "<%= "#{unicorn_logs_path}" %>/unicorn.error.log"
 old_pid     = "<%= "#{pid_file}.oldbin" %>"
 
 timeout 60

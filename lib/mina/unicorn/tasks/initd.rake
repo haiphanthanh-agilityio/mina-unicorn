@@ -22,17 +22,13 @@ namespace :unicorn do
       end
     end
 
-    namespace :daemon do
-      desc "Create or remove unicorn daemon"
-
-      desc "Remove Unicorn daemon from system"
-      task :remove => :'unicorn:stop' do
-        queue %{
-          echo "-----> Removing Unicorn daemon..."
-          #{echo_cmd "sudo update-rc.d -f #{app}-unicorn remove"}
-          #{echo_cmd "sudo rm -f #{unicorn_script}"}
-        }
-      end
+    desc "Remove Unicorn daemon from system"
+    task :remove => :'unicorn:stop' do
+      queue %{
+        echo "-----> Removing Unicorn daemon..."
+        #{echo_cmd "sudo update-rc.d -f #{app}-unicorn remove"}
+        #{echo_cmd "sudo rm -f #{unicorn_script}"}
+      }
     end
   end
 end

@@ -86,12 +86,8 @@ namespace :unicorn do
     end
   end
 
-  namespace :daemon do
-    desc "Create or remove unicorn daemon"
-
-    desc "Remove Unicorn daemon from system"
-    task :remove do
-      invoke :"unicorn:#{unicorn_init}:daemon:remove"
-    end
+  desc "Remove Unicorn daemon from system"
+  task :remove do
+    invoke :"unicorn:#{unicorn_init}:remove"
   end
 end

@@ -2,7 +2,8 @@ require 'mina/bundler'
 require 'mina/rails'
 require 'mina/unicorn/utility'
 
-set_default :services_path                  , '/etc/init.d'
+set_default :unicorn_init                   , 'initd'
+set_default :unicorn_service_path           , '/etc/init.d'
 
 set_default :unicorn_config_template        , File.expand_path("../../templates/unicorn.rb", __FILE__)
 set_default :unicorn_script_template        , File.expand_path("../../templates/unicorn.sh", __FILE__)
@@ -10,14 +11,14 @@ set_default :unicorn_socket                 , -> { "#{deploy_to}/#{shared_path}/
 set_default :unicorn_pid                    , -> { "#{deploy_to}/#{shared_path}/pids/unicorn.pid" }
 set_default :unicorn_config                 , -> { "#{deploy_to}/#{shared_path}/config/unicorn.rb" }
 set_default :unicorn_logs_path              , -> { "#{deploy_to}/#{shared_path}/log" }
-set_default :unicorn_script                 , -> { "#{services_path}/#{app}-unicorn" }
+set_default :unicorn_script                 , -> { "#{unicorn_service_path}/#{app}-unicorn" }
 set_default :unicorn_workers                , 4
 set_default :unicorn_bin                    , "#{bundle_prefix} unicorn" # you may prefer this over the line below
 set_default :unicorn_user                   , "#{user}"
 set_default :unicorn_group                  , "#{group}"
 
 namespace :unicorn do
-  include Mina::Unicorn::Utility
+  include Mina::Unicorn::Utility 
 
   desc "Upload and update (link) all Unicorn config files"
   task :update => [:'daemon:remove', :upload, :link]
@@ -39,18 +40,6 @@ namespace :unicorn do
     }
 
     invoke :'unicorn:update'
-  end
-
-  desc "Link Unicorn init script"
-  task :link => :environment do
-    queue %{
-      echo "-----> Linking Unicorn init script..."
-      #{echo_cmd %[sudo cp #{config_path}/unicorn.sh #{unicorn_script}]}
-      #{echo_cmd %[sudo chown #{unicorn_user}:#{unicorn_group} #{unicorn_script}]}
-      #{echo_cmd %[sudo chmod ugo+x #{unicorn_script}]}
-      #{echo_cmd %[sudo update-rc.d #{app}-unicorn defaults]}
-    }
-    queue check_ownership unicorn_user, unicorn_group, "#{unicorn_script}"
   end
 
   desc "Parses all Unicorn config files and uploads them to server"
@@ -85,13 +74,15 @@ namespace :unicorn do
     end
   end
 
+  desc "Link Unicorn init script"
+  task :link do
+    invoke :"unicorn:#{unicorn_init}:link"
+  end
+
   %w(stop start restart).each do |action|
     desc "#{action.capitalize} Unicorn"
-    task action.to_sym => :environment do
-      queue %{
-        echo "-----> #{action.capitalize} Unicorn"
-        #{echo_cmd "sudo service #{app}-unicorn #{action}"}
-      }
+    task action.to_sym do
+      invoke :"unicorn:#{unicorn_init}:#{action}"
     end
   end
 
@@ -99,11 +90,8 @@ namespace :unicorn do
     desc "Create or remove unicorn daemon"
 
     desc "Remove Unicorn daemon from system"
-    task :remove => :'unicorn:stop' do
-      queue %{
-        echo "-----> Removing Unicorn daemon..."
-        #{echo_cmd "sudo update-rc.d -f #{app}-unicorn remove"}
-      }
+    task :remove do
+      invoke :"unicorn:#{unicorn_init}:daemon:remove"
     end
   end
 end

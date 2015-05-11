@@ -45,11 +45,15 @@ Any and all of these settings can be overriden in your `deploy.rb`.
 * `unicorn_config`              - path to unicorn pid, default is `-> { "#{deploy_to}/#{shared_path}/config/unicorn.rb" }`
 * `unicorn_logs_path`           - path to unicorn logs folder, default is `-> { "#{deploy_to}/#{shared_path}/log" }`
 * `unicorn_workers`             - number of unicorn workers, default is `4`
-* `unicorn_bin`                 - command to start unicorn, default is `#{bundle_prefix} unicorn"`
+* `unicorn_bin`                 - command to start unicorn, default is `"#{bundle_prefix} unicorn"`
 
 ## Example
 
     require 'mina/unicorn'
+
+    # Override Unicorn settings
+    set :unicorn_workers, 2
+    ...
 
     task :setup => :environment do
       ...
@@ -68,6 +72,7 @@ Any and all of these settings can be overriden in your `deploy.rb`.
 
         to :launch do
           ...
+          # Restart Unicorn after deploying
           invoke :'unicorn:restart'
         end
       end

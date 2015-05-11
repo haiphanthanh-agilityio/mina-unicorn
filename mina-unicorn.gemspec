@@ -6,11 +6,11 @@ require 'mina/unicorn/version'
 Gem::Specification.new do |spec|
   spec.name          = 'mina-unicorn'
   spec.version       = Mina::Unicorn::VERSION
-  spec.authors       = ['Tobias Sandelius']
-  spec.email         = ['tobias@sandeli.us']
+  spec.authors       = ['Hai Phan']
+  spec.email         = ['hai.phanthanh@asnet.com.vn']
   spec.description   = %q{Unicorn tasks for Mina}
   spec.summary       = %q{Unicorn tasks for Mina}
-  spec.homepage      = 'https://github.com/sandelius/mina-unicorn'
+  spec.homepage      = 'https://github.com/haiphan-asnet/mina-unicorn'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)

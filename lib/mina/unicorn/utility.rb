@@ -9,7 +9,7 @@ module Mina
       end
 
       def parse_template(file)
-        erb("#{config_templates_path}/#{file}.erb").gsub('"','\\"').gsub('`','\\\\`').gsub('$','\\\\$')
+        erb("#{file}.erb").gsub('"','\\"').gsub('`','\\\\`').gsub('$','\\\\$')
       end
 
       def check_response
@@ -38,5 +38,17 @@ module Mina
         %{if [[ -h "#{destination}" ]]; #{check_response}}
       end
     end
+  end
+end
+
+class Rake::Task
+  def overwrite(&block)
+    @actions.clear
+    prerequisites.clear
+    enhance(&block)
+  end
+  def abandon
+    prerequisites.clear
+    @actions.clear
   end
 end

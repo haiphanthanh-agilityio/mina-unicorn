@@ -21,7 +21,7 @@ namespace :unicorn do
   include Mina::Unicorn::Utility 
 
   desc "Upload and update (link) all Unicorn config files"
-  task :update => [:'daemon:remove', :upload, :link]
+  task :update => [:remove, :upload, :link]
 
   desc "Setup Unicorn folders"
   task :setup do

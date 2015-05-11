@@ -15,16 +15,16 @@
 # Remove from auto-start
 # sudo update-rc.d -f <%= app %>-unicorn remove
 
-RVM_ENV="<%= rvm_env! %>"
+# RVM_ENV="<%= rvm_env! %>"
 APP_NAME="<%= app %>"
 APP_PATH="<%= deploy_to %>/<%= current_path %>"
 CONFIG_PATH="<%= unicorn_config %>"
 EUSER="<%= unicorn_user %>"
 RAILS_ENV=<%= rails_env %>
 
-RVM="source /usr/local/rvm/environments/$RVM_ENV"
+# RVM="source /usr/local/rvm/environments/$RVM_ENV"
 
-CMD="$RVM && cd $APP_PATH && <%= unicorn_bin %>"
+CMD="cd $APP_PATH && <%= unicorn_bin %>"
 CMD_OPTS="-c <%= unicorn_config %> -E $RAILS_ENV -D"
 PID="<%= unicorn_pid %>"
 

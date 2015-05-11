@@ -1,29 +1,27 @@
 # Mina Unicorn
+Mina tasks for Unicorn, that will create and manage unicorn process via init.d
 
 [Mina](https://github.com/nadarei/mina) tasks for handle with
 [Unicorn](https://github.com/unicorn/unicorn).
 
 This gem provides several mina tasks:
 
-    mina unicorn:phased_restart  # Restart unicorn (with zero-downtime)
+    mina unicorn:setup           # Create necessary folders, configs and upload to server
     mina unicorn:restart         # Restart unicorn
     mina unicorn:start           # Start unicorn
     mina unicorn:stop            # Stop unicorn
+    mina unicorn:remove          # Remove all configs and unicorn service from system
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'mina-unicorn', :require => false
+    gem 'mina-unicorn', git: 'git@github.com:haiphan-asnet/mina-unicorn.git', :require => false
 
 And then execute:
 
-    $ bundle
+    $ bundle install    
 
-Or install it yourself as:
-
-    $ gem install mina-unicorn
-    
 Note: by just including this gem, does not mean your development server will be Unicorn, for that, you need explicitly add `gem 'unicorn'` to your Gemfile.
 
 ## Usage
@@ -34,43 +32,37 @@ Add this to your `config/deploy.rb` file:
 
 Make sure the following settings are set in your `config/deploy.rb`:
 
+* `app`         - application name
 * `deploy_to`   - deployment path
 
-Make sure the following directories exists on your server:
+## Settings
+Any and all of these settings can be overriden in your `deploy.rb`.
 
-* `shared/tmp/sockets` - directory for socket files.
-* `shared/tmp/pids` - directory for pid files.
-
-OR you can set other directories by setting follow variables:
-
-* `unicorn_socket` - unicorn socket file, default is `shared/tmp/sockets/unicorn.sock`
-* `unicorn_pid` - unicorn pid file, default `shared/tmp/pids/unicorn.pid`
-* `unicorn_state` - unicorn state file, default `shared/tmp/sockets/unicorn.state`
-* `unicornctl_socket` - unicornctl socket file, default `shared/tmp/sockets/unicornctl.sock`
-
-Then:
-
-```
-$ mina unicorn:start
-```
+* `unicorn_config_template`     - config template file that unicorn runs with (that is a local *.rb.erb template file)
+* `unicorn_script_template`     - sh script template file to manage unicorn init.d process (that is a local *.sh.erb template file)
+* `unicorn_socket`              - path to unicorn socket, default is `-> { #{deploy_to}/#{shared_path}/sockets/unicorn.sock" }`
+* `unicorn_pid`                 - path to unicorn pid, default is `-> { "#{deploy_to}/#{shared_path}/pids/unicorn.pid" }`
+* `unicorn_config`              - path to unicorn pid, default is `-> { "#{deploy_to}/#{shared_path}/config/unicorn.rb" }`
+* `unicorn_logs_path`           - path to unicorn logs folder, default is `-> { "#{deploy_to}/#{shared_path}/log" }`
+* `unicorn_workers`             - number of unicorn workers, default is `4`
+* `unicorn_bin`                 - command to start unicorn, default is `"#{bundle_prefix} unicorn"`
 
 ## Example
 
     require 'mina/unicorn'
 
-    task :setup => :environment do
-      # Unicorn needs a place to store its pid file and socket file.
-      queue! %(mkdir -p "#{deploy_to}/#{shared_path}/tmp/sockets")
-      queue! %(chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/tmp/sockets")
-      queue! %(mkdir -p "#{deploy_to}/#{shared_path}/tmp/pids")
-      queue! %(chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/tmp/pids")
+    # Override Unicorn settings
+    set :unicorn_workers, 2
+    ...
 
+    task :setup => :environment do
       ...
 
-    end
+      # Unicorn setup.
+      invoke :'unicorn:setup'
 
-    # Add pids and sockets directories to shared paths
-    set :shared_paths, ['config/database.yml', 'tmp/pids', 'tmp/sockets']
+      ...
+    end
 
     task :deploy do
       deploy do
@@ -80,7 +72,8 @@ $ mina unicorn:start
 
         to :launch do
           ...
-          invoke :'unicorn:phased_restart'
+          # Restart Unicorn after deploying
+          invoke :'unicorn:restart'
         end
       end
     end
